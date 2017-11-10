@@ -97,6 +97,7 @@ concat()用于字符串拼接
 
 
 获取对象属性的方法:  
+
 * for in :  遍历整个原型链上可遍历的属性  
 * Object.keys()  :  Object.keys 返回一个数组，其元素来自于从给定的对象上面可直接枚举的属性 这些属性的顺序与手动遍历该对象属性时的一致(for in)    
 * 属性 in 对象 ： 能够检查该对象整个原型连上的属性，包括不可遍历的属性  
@@ -315,3 +316,182 @@ switch语句的穿透性
 	var b="1";
 	b+=1;
 	console.log(b);   //"11" 
+
+
+### 函数
+#### 1.定义函数
+定义函数的方法  
+* 函数声明 (function xx(){})  
+* 函数表达式(var xx=function(){})  
+* Function构造函数实例化(var xx=new Function());
+
+#### 2.this指向
+* 普通函数中，this指向window 严格模式下指向undefined 
+* 函数对象调用call或apply或bind方法时，this指向call或apply或bind的第一个参数
+* 作为对象的方法时，this指向方法所属的对象
+* 作为构造函数时，this指向实例化的对象
+
+		function Person(name){
+			this.name=name;
+		}
+		Person.prototype.sayHi=function(){
+			console.log("Hi,i'm "+this.name);
+		}
+		var p1=new Person("Jack");
+		p1.sayHi();
+	
+		//Hi,i'm Jack
+		//属于上面中作为构造函数的规则
+
+#### 3.typeof回顾
+	
+	var arr=new Array();
+	typeof Array         //function
+	typeof arr           //object
+	
+	String() Number() 等等同Array
+	-------------------------------------------
+	
+	下面是特殊情况：
+	var foo=new Function();
+	typeof Function     //function
+	typeof foo			//function
+
+
+#### 4.函数对象
+函数对象的属性   
+  
+* length:形参个数   
+* arguments:实参的个数  
+* caller:获取调用当前函数的函数  
+	如果函数是从 JavaScript 程序的顶层调用的，则caller为null
+	
+		var obj = {
+    		foo1:function(){
+        		console.log(this.foo1.caller);
+    		},
+    		foo2:function abc(){ //写函数名与不写函数名的区别
+        		this.foo1();
+    		}
+		};
+		obj.foo1();      //null
+		obj.foo2();		 //函数abc的函数体
+
+
+* callee:  
+  callee 是 arguments 对象的一个属性，它可以用于引用该函数的函数体内当前正在执行的函数，常用来执行递归。ES5严格模式下不可用  
+
+		function dg(n){
+    	if (n <= 0)
+        	return 1;
+    	else
+        	return n * arguments.callee(n - 1);
+		};
+		dg(5);        //120
+
+* prototype  
+	函数的原型对象
+
+* constructor  
+  prototype的属性 指向构造器
+
+
+函数对象的方法
+
+* call
+* apply
+* bind
+	[bind详解](https://segmentfault.com/a/1190000002662251)
+* toString、valueOf
+
+
+#### 5.预解析
+JS解析和执行的过程：  
+1.全局预解析阶段，将全局变量(var)和函数声明(function)前置  
+2.全局顺序执行阶段，变量赋值，函数调用等正常操作  
+3.当遇到函数调用时，在执行函数内代码前，进行函数范围的预解析  
+4.当存在函数嵌套时，以此类推，会进行多次函数预解析  
+
+
+	AA();
+	function AA(){
+    	console.log("AA_1");
+	}
+	var AA = function AA(){
+    	console.log("AA_2");
+	};
+	AA();
+
+
+#### 6.作用域
+
+ES5中使用立即执行表达式(IIFE)来模拟块作用域
+
+JS采用的是词法作用域(即静态作用域)，在编码阶段就决定好了作用域，与在哪里调用无关  
+
+	var name="Jack";
+	function echo(){
+		console.log(name);
+	}
+	function env(){
+		var name="Bill";
+		echo();
+	}
+	env();            //Jack
+
+通过new Function创建的函数不一定遵循静态作用域
+
+#### 7.闭包
+
+闭包是指一个函数或函数的引用与一个引用环境绑定在一起。引用环境是一个存储该函数每个非局部变量的表
+
+不合理使用闭包(或过多使用闭包)会导致：空间浪费 内存泄露 性能消耗  
+
+	html:
+	<div id="d1">div1</div>
+    <div id="d2">div2</div>
+    <div id="d3">div3</div>
+	
+	js:
+	for(var i=1;i<4;i++){
+      document.getElementById("d"+i).onclick=function(){
+        alert(i);
+      };
+    }
+	//结果 无论点击哪个div都弹出4
+	出错点在于三个函数中的i都指向同一块作用域的i了
+
+	利用闭包解决问题
+	for(var i=1;i<4;i++){
+      !function(i){
+        document.getElementById("d"+i).onclick=function(){
+          alert(i);
+        };
+      }(i);
+    }
+
+-
+
+	//利用闭包模仿类(或保护私有变量)
+	(function(){
+		var _userId=2333;
+		var _typeId='user';
+		var export={};
+
+		function converter(userId){
+			return +userId;
+		}
+
+		export.getUserId=function(){
+			return converter(_userId);
+		}
+		export.getTypeId=function(){
+			return _typeId;
+		}
+		window.export=export;
+	}());
+
+
+#### 8.执行上下文环境
+
+
