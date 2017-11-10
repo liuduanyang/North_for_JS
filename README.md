@@ -129,3 +129,189 @@ concat()用于字符串拼接
 	String.prototype.match(regexp);
 	String.prototype.replace(regexp); 
 
+-
+
+	var a=[1,2,3,4];
+	a.length=0;
+	console.log(a);      //[]
+	注意：数组是引用类型
+
+
+### 语法
+#### 1.ES5无块作用域且存在预解析
+
+	if(false){
+		var a=20;
+	
+	}
+	console.log(a);         //undefined
+
+	//上述等同于
+	var a;
+	if(false){
+		a=20;
+	}
+	console.log(a);
+
+-
+
+	for(var i = 0;i<5;i++){
+    	console.log("in for ",i);
+	}
+	console.log("out of for ",i);
+	
+	in for 0
+	in for 1
+	in for 2
+	in for 3
+	in for 4
+	out of for 5
+
+
+#### 2.严格模式
+针对整个脚本使用严格模式:在脚本的最上面添加'use strict'  
+针对函数使用严格模式：在函数体内的最上面添加'use strict'  
+
+* 严格模式下全局变量需要显示声明 即声明变量需使用var(es5中的严格模式)  
+* 严格模式下普通函数中的this指向undefined
+* 严格模式下不可改变基本类型的属性(例如不可以"a".length=10  在非严格模式下不会改变但也不会报错)
+* 严格模式下禁止函数参数重名(变量可以 后定义的覆盖先定义的)
+* 严格模式下禁止删除未定义的变量
+
+
+		//严格模式的位置
+		function isStrictMode() {
+    		return this === window?false:true;
+		}
+		"use strict"
+		console.log(isStrictMode());    //false
+
+		"use strict"
+		function isStrictMode() {
+    		return this === window?false:true;
+		}
+		console.log(isStrictMode());    //true
+
+		function isStrictMode() {
+		"use strict"
+	    	return this === window?false:true;
+		}
+		console.log(isStrictMode());    //true
+
+		function isStrictMode() {
+    		return this === window?false:true;
+		"use strict"
+		}
+		console.log(isStrictMode());    //false
+
+		在编码时将"use strict"放到你要使用严格模式的位置之前
+
+
+#### 3.switch
+switch与case的比对是全等(===)  
+
+switch的两种模式
+
+	//switch的两种模式
+	var i="5";
+	switch(i){
+    case 5:
+		console.log("number");
+		break;
+    case "5":
+		console.log("string");
+		break;
+    default:
+		console.log("others");	
+	}
+	// string
+	---------------------------------------
+	var l=75;
+	switch(true){
+    case l>90:
+		console.log("还行");
+		break;
+    case l>80:
+		console.log("真棒");
+		break;
+    case l>70:
+		console.log("无敌");
+		break;
+    default:
+		console.log("人中龙凤");
+	}
+	//无敌
+
+switch语句的穿透性
+	
+	var f=1;
+	switch(f){
+		case 0:
+			console.log(0);
+		case 1:
+			console.log(1);
+		case 2:
+			console.log(2);
+		case 3:
+			console.log(3);
+		default:
+			console.log("others");
+	}
+	
+	1
+	2
+	3
+	others
+
+
+#### 4.对稀疏数组的遍历
+两种遍历数组的方法的  
+遍历对象用for in  
+遍历数组、字符串用for of
+	
+	var a=[1,,2,3,,4];
+	for(var i in a){
+		console.log(i,a[i]);
+	}	
+
+	0 1
+	2 2
+	3 3
+	5 4
+	//会跳过为空的数组项
+
+	--------------------------------------
+
+	for(var j of a){
+		console.log(j);
+	}
+	
+	1
+	undefined
+	2
+	3
+	undefined
+	4
+
+
+#### 5.避免混淆=与==
+在编写表达判断的语句时，要避免将==错写为=，如果发生错写，也不会报错(因为js不是编译型语言)  
+
+结果办法：`1==a` 即将正常思维中==两边的元素位置互换 即左边为一个确值 右边为一个变量 如果将==写成=则会报错
+	
+	var a=1;
+	if(1=a){
+		xxx;
+	}
+	这样会报错
+
+### 6. ++ 与 +=
+这两个是有区别的，不要混淆
+
+	var a="1";
+	a++;     
+	console.log(a);   //2
+
+	var b="1";
+	b+=1;
+	console.log(b);   //"11" 
