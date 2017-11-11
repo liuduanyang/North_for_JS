@@ -422,6 +422,20 @@ JS解析和执行的过程：
 	};
 	AA();
 
+	AA_1
+	AA_2
+	在同一作用域内，如果一个函数和一个变量重名，且变量未赋值，该标识符指向函数，例如上例输出AA_1
+	
+	或 一个变量和另一个变量重名，且下面的变量未赋值，该标识符指向上一个变量代表的数据或引用
+
+	例
+	var a=333;
+	var a;
+	console.log(a);      //333
+
+	function ab(){console.log("111")};
+	var ab;
+	ab;               //ƒ ab(){console.log("111")}
 
 #### 6.作用域
 
@@ -492,6 +506,217 @@ JS采用的是词法作用域(即静态作用域)，在编码阶段就决定好�
 	}());
 
 
-#### 8.执行上下文环境
+#### 8.执行上下文环境及作用域
+详见红宝书73页
+
+	//一个涉及到预解析和执行环境及作用域的例子
+	function changeColor(){
+		if(color==='blue'){
+			color="red";
+		}
+		else if(color===undefined){
+			color="yellow";
+		}
+	}
+	changeColor();
+	console.log(color);      //yellow
+	var color="blue";
+	console.log(color);      //blue
+
+	----------------------------------------
+	上述代码相当于
+	function changeColor(){
+		if(color==='blue'){
+			color="red";
+		}
+		else if(color===undefined){
+			color="yellow";
+		}
+	}
+	var color;          //此时color为undefined
+	changeColor();
+	console.log(color);
+	color="blue";
+	console.log(color);	
+
+代码执行时过程:  
+先进性预解析，然后按顺序执行，执行函数调用时，先在函数内进行预解析，将执行环境弹入环境栈的栈顶，并生成作用域链，然后执行函数，函数执行完毕后执行环境弹出环境栈，销毁函数即作用域链(如果涉及到闭包或有变量引用则另当别论)  
+有些笼统待补全
 
 
+### 对象
+#### 1.对象是什么
+对象是若干无序属性的集合  
+
+#### 2.创建对象
+方法：  
+1.通过字面量创建  
+2.通过Object构造函数创建  
+3.通过Object的create静态方法创建
+
+#### 3.对象属性的分类
+1.数据属性  
+2.访问器属性  
+3.内置属性  
+
+#### 4.对象的数据属性的特性
+* value 属性的值  
+* writable 确定属性是否可写  
+* configurable 确定属性是否能删除和其他特性是否可配置(其他的特性的false 和 true不可不修改)  
+* enumerable 确定属性是否可枚举(是否可for in遍历到)
+
+		var obj={
+			x:1,
+			y:2
+		};
+		Object.defineProperty(obj,"x",{enumerable:false});
+		for(var k in obj){console.log(k,obj[k])} 
+		//y   2  
+		//x并没有遍历到
+
+
+如果Object.defineProperty的第二个参数是没有定义的属性则 四个特性都是false（value默认为undefined 但可通过value特性设置）  
+
+	Object.defineProperty(a,"z",{});
+	Object.getOwnPropertyDescriptor(a,"z");  
+	//{value: undefined, writable: false, enumerable: false, configurable: false}
+
+可一次性为一个对象的多个属性添加或修改特性
+	
+	var a={x:1};
+	Object.defineProperties(a,{
+		a:{value:1,enumerable:true},
+		b:{value:2,enumerable:true},
+		c:{value:3,enumerable:true}
+	});
+	a
+	//{x: 1, a: 1, b: 2, c: 3}
+
+全局变量(window对象的属性)的默认配置为：  
+{value:具体情况具体分析, writable: true, enumerable: true, configurable: false}
+
+#### 5.对象的访问器属性
+	var o={
+		_x:1,
+		get x(){               
+			return this._x;
+		},
+		set x(val){
+			this._x=val;
+		}
+	};
+	console.log(o.x);    //调用get方法     1
+	o.x=2;               //调用set方法
+	console.log(o.x,o._x);   //2 2
+
+如果只有get方法则只是只读属性 即无法通过set方法去改变值  但是可以通过直接访问属性的方式去改变值 即 o._x=10 有效    
+
+get和set不是对象的方法 不可按照方法进行调用 应以上述例子为准 
+
+可通过set方法在对属性进行修改时进行数据过滤、约束  即可对修改加以限制 作用不止于此
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+	var p1={
+		_name:"Jack",
+		_age:23,
+		set age(val){
+			if(val>0&&val<150){
+				this._age=val;
+			}
+			else{
+				console.log("请设置正常属性");
+			}
+		},
+		get age(){	
+			return this._age;
+		}
+	};
+
+	p1.age=178;             //请设置正常属性
+
+实现了过滤的效果 set和get内都可以加函数实现某种功能
+
+
+#### 6.对象的访问器属性的特性
+* configurable 确定属性是否能删除和其他特性是否可配置(其他的特性的false 和 true不可不修改)  
+* enumerable 确定属性是否可枚举(是否可for in遍历到)
+* get 在读取属性时调用
+* set 在写入属性时调用
+
+两种添加访问器属性的方法  
+1.直接通过字面量创建   
+如5.对象的访问器属性 所示  
+  
+2.通过Object.defineProperty()方法添加  
+
+	var a={_x:1};
+	Object.defineProperty(a,"x",{
+		configurable:true,
+		enumerable:true,
+		get:function(){return this._x},
+		set:function(val){this._x=val}
+	});
+	a.x;            //1
+	a.x=10;         
+	a.x;            //10
+
+注意两个方法设置set和get时的不同
+
+同样也可以使用Object.defineProperties方法给对象添加多个访问器属性
+
+
+#### 7.对象的原型继承
+大多都会，粗略记
+
+	//通过静态方法创建对象时的继承
+	var a={};
+	var b=Object.create(a);
+	b.__proto__===a;           //true
+
+#### 8.对象的原型继承中原型共享问题
+通过静态方法继承或通过构造函数继承存在原型共享的问题，即他们的一些属性都是指向原型链中某一对象的属性，并非他们私有，如果该对象修改该属性则会影响这么一大堆对象
+
+解决办法：  
+模拟类-类继承的方式(一)  
+
+	function Person(name,age){
+    	this.name = name;
+    	this.age = age;
+	};
+	Person.prototype.showName = function(){console.log(this.name);};
+	function Student(name,age,id){
+    	Person.call(this,name,age);
+    	this.id = id;
+	}
+	Student.prototype.__proto__ = Person.prototype;
+	var s1 = new Student("xxx",22,2017001);
+	var s2 = new Student("www",23,2017002);
+	
+	s1          //new Student("xxx",22,2017001);
+	s2		    //new Student("www",23,2017002);
+	name age id属性均为s1 s2私有 不会出现原型共享问题
+
+
+模拟类-类继承的方式(二)  
+
+	function Person(name,age){
+    	this.name = name;
+    	this.age = age;
+	};
+	Person.prototype.showName = function(){
+	    console.log(this.name);
+	};
+	function Student(name,age,id){
+    	Person.call(this,name,age);
+    	this.id = id;
+	}
+	Student.prototype = Object.create(Person.prototype);
+	// console.log(Person.prototype.constructor); //
+	// console.log(Student.prototype.constructor); //  
+	//Object.create语句使Student.prototype被覆盖掉 所以访问constructor会沿着原型链访问Person.prototype的constructor
+	Student.prototype.constructor = Student;
+	var s1 = new Student("xxx",22,2017001);
+	var s2 = new Student("www",23,2017002);
+
+#### 9.this缺陷
+* 软绑定
+* call或apply
