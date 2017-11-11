@@ -717,6 +717,6 @@ get和set不是对象的方法 不可按照方法进行调用 应以上述例子
 	var s1 = new Student("xxx",22,2017001);
 	var s2 = new Student("www",23,2017002);
 
-#### 9.this缺陷
+#### 9.this缺陷解决办法
 * 软绑定
 * call或apply
