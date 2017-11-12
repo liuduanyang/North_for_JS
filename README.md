@@ -720,3 +720,125 @@ get和set不是对象的方法 不可按照方法进行调用 应以上述例子
 #### 9.this缺陷解决办法
 * 软绑定
 * call或apply
+
+
+### 数组
+#### 1.创建数组
+方法：字面量 Array构造函数  
+如果创建数组时数组内有表达式，则先计算表达式的值，再创建数组，两种方法同
+
+	var arr=[1+2,2*3,!false,5+'5',5-'5'];
+	arr         //[3, 6, true, "55", 0]
+
+注意采用构造函数创建数组时的参数
+
+	var arr1=new Array("5");
+	var arr2=new Array(5);
+	var arr3=new Array(0,1,2,3,4);
+	arr1           //["5"]
+	arr2		   //[empty × 5]  五个空元素      [,,,,,]
+	arr3           //[0,1,2,3,4]
+
+	注意如果数组最后一项为空，则忽略这项
+	例
+	['a',,'b',,'c',].length        //5
+
+	如果数组的某项为空，访问时返回undefined
+	例
+	var b=[1,,3];
+	b[0];         //1
+	b[1];         //undefined
+
+
+#### 2.对数组的基本操作
+
+	//增
+	var a=[1];
+	a[100]=100;
+	a                 //[1, empty × 99, 100]
+	a.length          //101
+
+	//删
+	var a=[0,1,2,3,4,5];
+	delete a[1];
+	a	              //[0, empty, 2, 3, 4, 5];
+	a.length          //6
+	
+访问数组元素时，隐式类型转换后也可访问（但是只有一些隐式转换可以）
+	
+	var a=[0,1,2,3,4];
+	a[2.00]                 //2
+	a[new Number(3)]        //3
+	a["4"]                  //4
+
+	a[true]                 //undefined  不可以访问
+
+	负数不可以访问
+
+	如果不是这些 则可能会为数组对象添加元素
+	例
+	a[-2]=-2;
+	a["f"]="我是元素";
+	a                      //[0, 1, 2, 3, 4, -2: -2, f: "我是元素"]
+	a.length               //5
+
+#### 3.稀疏数组
+前面有提到过
+
+#### 4.数组的方法和高阶函数
+数组的静态方法：  
+
+* Array.from()
+* Array.of()
+* Array.isArray()
+
+数组的原型方法，添加和删除元素(改变原数组):
+
+* Array.prototype.shift()
+* Array.prototype.unshift()
+* Array.prototype.pop()  
+* Array.prototype.push()
+* Array.prototype.splice()
+
+数组的原型方法，排序(改变原数组):
+
+* Array.prototype.reverse()
+* Array.prototype.sort()
+
+
+数组的原型方法，合并、切分、连接(原数组不变，生成新数组):
+
+* Array.prototype.concat()
+* Array.prototype.slice()
+* Array.prototype.join() 
+
+数组的原型方法，查找(原数组不变):
+
+* Array.prototype.indexOf()
+* Array.prototype.lastIndexOf()
+
+
+数组的高阶函数，(原数组不变，生成新数组):
+
+* Array.prototype.forEach()
+* Array.prototype.every()
+* Array.prototype.some()
+* Array.prototype.map()
+* Array.prototype.filter()
+* Array.prototype.reduce()
+* Array.prototype.reduceRight()
+
+
+
+### Date 日期
+不想总结 就先写几个常用的函数吧
+
+	var now=new Date()
+	now.getFullYear()    //获取年
+	now.getMonth()       //月    0-11
+	now.getDate()        //日
+	now.getHours()		 //小时
+	now.getMinutes()	 //分
+	now.getSeconds()     //秒
+
+
