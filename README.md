@@ -970,6 +970,7 @@ get和set不是对象的方法 不可按照方法进行调用 应以上述例子
 
 
 ### 异常
+如果try块的任何代码发生了错误，就会立即退出代码执行过程(退出try,如果下面还有其他代码会忽略)，然后紧接着执行catch块，此时catch块会接收到一个包含错误信息的对象,错误信息保存在对象的message属性内
 
 	try{
 		console.log("你好");
@@ -988,11 +989,10 @@ get和set不是对象的方法 不可按照方法进行调用 应以上述例子
 		console.log(你好);         //故意未加引号
 	}
 	catch(e){
-		console.log("错误信息是：",e);
+		console.log("错误信息是：",e.message);
 	}
 
-	错误信息是： ReferenceError: 你好 is not defined
-    at <anonymous>:2:14
+	错误信息是： 你好 is not defined
 
 	--------------------------------------------------
 
@@ -1007,11 +1007,33 @@ get和set不是对象的方法 不可按照方法进行调用 应以上述例子
 		console.log("程序执行完毕");
 	}
 
+finally子句是可选的，一经使用，其代码无论如何都会执行。只要代码中包含finally子句，则无论try或catch语句块中包含什么代码 甚至包含return语句，都不会阻止finally子句的执行。如果提供了finally子句，则catch子句就变成可选的了，即二者有一个存在即可，当然可以共存
+
+例如
+
+	function t(){
+		try{
+			return 2;
+		}
+		catch(e){
+			return 1;
+		}
+		finally{
+			return 0;
+		}
+	}	
+	//最终会返回0 因为先执行try内语句 返回2 且无错不执行catch内语句 但必须执行finally语句 则覆盖掉return 2  所以最终返回0
+
+	只要代码中包含finally子句，那么无论try还是catch中的return都会被覆盖掉，因此在使用finally之前一定要想清楚你想怎么处理
+
+
 当运行时错误产生时，会抛出一个错误对象，可以对此对象进行捕获和处理        
 
 也可以通过Error的构造器new一个错误对象，当检测到异常时或不满足逻辑时，手动抛出错误对象
 
 所有错误对象的基础原型是Error.prototype，默认的name属性为"Error"，message属性为""
+
+当try-catch语句中发生错误时，浏览器会认为错误已经被处理了
 
 
 ### Math
