@@ -1013,3 +1013,35 @@ get和set不是对象的方法 不可按照方法进行调用 应以上述例子
 
 所有错误对象的基础原型是Error.prototype，默认的name属性为"Error"，message属性为""
 
+
+### Math
+Math和JSON都是对象，都不是构造函数  
+
+* Math.ceil()
+* Math.floor()
+* Math.random()
+* Math.round()
+* Math.max()
+* Math.min()
+* Math.abs()
+
+
+### JSON
+#### 1.JSON简介
+JSON:Javascript Object Notation js对象标记  
+JSON是一种轻量级的数据交换格式  
+JSON是JS对象的字符串形式的表示法  
+JSON本质是一个字符串  
+
+	{a:'Hello',b:'World'}         //这是JS对象
+	"{a:'Hello',b:'World'}"       //这是JSON，本质是字符串
+
+#### 2.JSON方法
+
+* JSON.stringify()   
+将一个JavaScript值(对象或者数组)转换为一个 JSON字符串
+* JSON.parse()
+用来解析JSON字符串，构造由字符串描述的JavaScript值或对象
+
+#### 3.前后端分离 JSON传输数据
+参见11 NodeJsonTest实例
