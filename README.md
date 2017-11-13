@@ -967,6 +967,16 @@ get和set不是对象的方法 不可按照方法进行调用 应以上述例子
 	"aabbbbccbbaa".match(/b+/g)        //["bbbb","bb"]
 	"aabbbbccbbaa".split(/b+/)         //["aa","cc","aa"]
 
+正则在匹配时，如果未匹配成功则lastIndex的值修改为0  
+例如
+
+	r1.test("acsvsvAbcafsa")     //true
+	r1.lastIndex                 //9
+	r1.test("acsvsvAbcafsa")     //false
+	r1.lastIndex                 //0
+	r1.test("acsvsvAbcafsa")     //true
+	r1.lastIndex                 //9
+	//不仅test 其它场景也是这样
 
 
 ### 异常
