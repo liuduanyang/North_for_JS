@@ -1067,3 +1067,47 @@ JSON本质是一个字符串
 
 #### 3.前后端分离 JSON传输数据
 参见11 NodeJsonTest实例
+
+
+### 异步的JS
+JS是单线程的，指的是JS引擎解释执行代码是单线程的，完成所有任务需要其他线程配合
+
+异步过程：
+主线程发起一个异步请求，相应的工作线程接收请求并告知主线程已收到(异步函数返回)；主线程可以继续执行后面的代码，同时工作线程执行异步任务；工作线程完成工作后，将消息放入消息队列，通知主线程；主线程收到通知后，当主线程执行完其它代码后，执行一定的动作(调用回调函数)
+
+消息队列：消息队列是一个先进先出的队列，它里面存放着各种消息  
+事件循环：事件循环是指主线程重复从消息队列中取消息、执行的过程，而且主线程只有在将当前的消息执行完成后，才会去取下一个消息，这种机制就叫做事件循环机制，取一个消息并执行的过程叫做一次循环
+
+消息可认为是注册异步任务时添加的回调函数
+
+当消息队列空时主线程阻塞，直到消息队列再次非空
+
+参考链接：  
+[理解同步、异步和事件循环](https://segmentfault.com/a/1190000004322358)  
+[阮大，JS运行机制详解](http://www.ruanyifeng.com/blog/2014/10/event-loop.html)
+
+
+### AJAX
+待补充
+
+### XMLHttpRequest
+	
+	var xhr=new XMLHttpRequest();
+	if(!xhr){
+		console.log("创建失败！");
+	}
+	xhr.onreadystatechange=function(){
+		if(xhr.readyState===4){
+			if(xhr.status===200){
+				var message=xhr.responseText;
+				console.log(message);
+			}
+		}
+	}
+	xhr.open("get","url地址",true);
+	//使用get方法，访问该url地址,采用异步方式访问
+	xhr.send();
+
+
+待补充
+
