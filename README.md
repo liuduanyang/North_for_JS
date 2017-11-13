@@ -967,17 +967,31 @@ get和set不是对象的方法 不可按照方法进行调用 应以上述例子
 	"aabbbbccbbaa".match(/b+/g)        //["bbbb","bb"]
 	"aabbbbccbbaa".split(/b+/)         //["aa","cc","aa"]
 
-正则在匹配时，如果未匹配成功则lastIndex的值修改为0  
+正则在匹配时，如果未匹配成功则lastIndex的值修改为0(设置全局匹配与不设置还有不同)  
 例如
 
+	//r1设置了全局匹配标识 g
+	var r1=new RegExp('abc','gi');
 	r1.test("acsvsvAbcafsa")     //true
 	r1.lastIndex                 //9
 	r1.test("acsvsvAbcafsa")     //false
 	r1.lastIndex                 //0
 	r1.test("acsvsvAbcafsa")     //true
 	r1.lastIndex                 //9
+
+
+	//r2没有设置全局匹配标识 g
+	var r2=new RegExp('bc','i');
+	r2.test('adsgsbcadsfas')     //true
+	r2.lastIndex                 //0
+	r2.test('adsgsbcadsfas')     //true
+	r2.lastIndex                 //0
+	r2.test('adsgsbcadsfas')     //true
+	r2.lastIndex                 //0
+
 	//不仅test 其它场景也是这样
 
+	
 
 ### 异常
 如果try块的任何代码发生了错误，就会立即退出代码执行过程(退出try,如果下面还有其他代码会忽略)，然后紧接着执行catch块，此时catch块会接收到一个包含错误信息的对象,错误信息保存在对象的message属性内
