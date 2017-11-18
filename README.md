@@ -859,6 +859,22 @@ get和set不是对象的方法 不可按照方法进行调用 应以上述例子
 	now.getMinutes()	 //分
 	now.getSeconds()     //秒
 
+#### 自定义时间
+
+	var now=new Date();
+	now.setFullYear(2015);
+	now.setMonth(5);
+	now.setDate(1);
+	now.setHours(23);
+	console.log(now);    //Mon Jun 01 2015 23:50:57 GMT+0800 (中国标准时间)
+
+	now.getFullYear();   //2015
+	now.getMonth();      //5
+	now.getDate();       //1
+	now.getHours();      //23
+
+	//注意 Jun是六月 也是说new Date的实例 月份是1-12月  而set get方法的月份是0-11
+
 
 ### 正则
 #### 1.字符
@@ -992,6 +1008,52 @@ get和set不是对象的方法 不可按照方法进行调用 应以上述例子
 	//不仅test 其它场景也是这样
 
 	
+#### 8.正则应用
+
+	//将电话号码进行分类
+	//1、移动号段有134,135,136,137,138,139,147,150,151,152,157,158,159,178,182,183,184,187,188
+	//2、联通号段有130，131，132，145，155，156，176，185，186
+	//3、电信号段有133，153，177，180，181，189
+
+	var r1=/((134)|(135)|(136)|(137)|(138)|(139)|(147)|(150)|(151)|(152)|(157)|(158)|(159)|(178)|(182)|(183)|(184)|(187)|(188))\d{8}/;
+	var r2=/((130)|(131)|(132)|(145)|(155)|(156)|(176)|(185)|(186))\d{8}/;
+	var r3=/((133)|(153)|(177)|(180)|(181)|(189))\d{8}/;
+
+	var numbers = [
+    	13335361211, 13897516385, 15022457757, 15191936306, 18693949497,
+   		13933314962, 13138569753, 13125634288, 18168751105, 13240288945,
+    	13098645914, 15603692153, 13455257780, 15916685067, 14701124042,
+    	13089741902, 15560351609, 1211131444, 13017332800, 18937330815,
+    	15699699730, 13895038245, 18653855868, 15324150371, 13202536075,
+    	15873730173, 18828673819, 17658565118, 13069428953, 13814537603
+	];
+	var CMCC = [];//移动
+	var CUCC = [];//联通
+	var CTCC = [];//电信
+	var Others = [];//其他号码
+
+	for(var i=0;i<numbers.length;i++){
+		if(r1.test(numbers[i])){
+    	    CMCC.push(numbers[i]);
+		}
+		else if(r2.test(numbers[i])){
+    	    CUCC.push(numbers[i]);
+		}
+		else if(r3.test(numbers[i])){
+        	CTCC.push(numbers[i]);
+		}
+		else{
+        	Others.push(numbers[i]);
+        	console.log(numbers[i]);
+		}
+	}
+
+	console.log(CMCC.length);    //11
+	console.log(CUCC.length);    //14
+	console.log(CTCC.length);    //4
+	console.log(Others.length);  //1
+
+
 
 ### 异常
 如果try块的任何代码发生了错误，就会立即退出代码执行过程(退出try,如果下面还有其他代码会忽略)，然后紧接着执行catch块，此时catch块会接收到一个包含错误信息的对象,错误信息保存在对象的message属性内
@@ -1089,8 +1151,42 @@ JSON本质是一个字符串
 * JSON.parse()
 用来解析JSON字符串，构造由字符串描述的JavaScript值或对象
 
+#### 两种方法的第二参数详解
+	
+	var o2 = {
+   		a:[1,2],
+    	b:true,
+    	c:[3,4,"x",{y:34,z:56}],
+	};
+	//在转换之前，对每个键值对执行一次第二参数(学名 replace)的函数,包括嵌套在内的键值对
+	var jsonStr2 = JSON.stringify(o2,function (key,value) {
+    if(value === true){
+        value = false;
+    }
+    if((value instanceof Array)&&value.length == 4){
+        value[0] = "Hi";
+    }
+    if(key === "a"){
+        console.log("find key a");
+        value = 12345;
+    }
+    if(key === "z"){
+        console.log("find key z");
+        value = "zzz";
+    }
+    return value;
+	});
+	console.log(jsonStr2);     //{"a":12345,"b":false,"c":["Hi",4,"x",{"y":34,"z":"zzz"}]}
+	console.log(o2);           //{a: Array(2), b: true, c: Array(4)}
+
+在parse方法中 用法同上
+	
+
 #### 3.前后端分离 JSON传输数据
 参见11 NodeJsonTest实例
+
+
+
 
 
 ### 异步的JS
