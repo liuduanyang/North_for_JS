@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Co2</title>
+</head>
+<body>
+  <canvas id="mycanvas"></canvas>
+  <input type="range" value="1" min="0.5" step="0.1" max="1.5" id="range">
+  <script>
+    var mycanvas = document.getElementById("mycanvas");
+    mycanvas.width=500;
+    mycanvas.height=500;
+    var context = mycanvas.getContext("2d");
+    // context.fillStyle='#ff0000';
+    
+    /*
+    Canvas图像操作
+        var img = new Image();
+    img.src="./bg.jpg";
+    img.onload=function(){
+      context.drawImage(图片对象,在画布上x,在画布上y)
+      context.drawImage(图片对象,在画布上x,在画布上y,在画布上的宽度,在画布上高度)
+      context.drawImage(img,200,100,100,100,50,50,400,300)  // context.drawImage(图片对象,原图上裁剪开始点x,原图上裁剪开始点y,裁剪宽度,裁剪高度,在画布上x,在画布上y,在画布上的宽度,在画布上高度)
+    }
+    */
+
+    /*
+    案例：水印以及通过滑竿改变大小(离屏水印)
+    var range = document.getElementById("range")
+    var img = new Image();
+    img.src="./bg.jpg";
+
+
+    range.onmousemove=function(){
+      context.clearRect(0,0,canvas.width,canvas.height)
+      context.drawImage(img,mycanvas.width/2-500*range.value/2,mycanvas.height/2-500*range.value/2,500*range.value,500*range.value)
+      context.font = "bold 50px Arial";
+      context.lineWidth = 1;
+      context.fillStyle = "rgba( 255 , 0 , 0 , 0.5 )";
+      context.textBaseline = "middle";
+      context.fillText( "== 水印文字 ==" , 70 , 50 );
+    }
+    img.onload=function(){
+      context.drawImage(img,mycanvas.width-500*range.value,mycanvas.height-500*range.value,500*range.value,500*range.value)
+      context.font = "bold 50px Arial";
+      context.lineWidth = 1;
+      context.fillStyle = "rgba( 255 , 0 , 0 , 0.5 )";
+      context.textBaseline = "middle";
+      context.fillText( "== 水印文字 ==" , 70 , 50 );
+    }
+
+    */
+  </script>
+</body>
+</html>

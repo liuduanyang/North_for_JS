@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Canvas</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    <canvas id="mycanvas"></canvas>
+      <script>
+        var mycanvas = document.getElementById("mycanvas");  // 获取Canvas元素节点
+        mycanvas.width=500;  // Canvas绘图表面的大小  而通过Css设置的Canvas的元素样式大小(若不设置，则大小同绘图表面大小)
+        mycanvas.height=500;
+        var context = mycanvas.getContext("2d");  // Canvas获取图形上线文 返回CanvasRenderingContext2D对象
+        context.fillStyle='#ff0000';  // 设置绘制状态
+        // context.fillRect(0,0,100,100);  // 通过Canvas Api 绘制图形图像   fillRect(开始x,开始y,宽度,高度)
+        // context.clearRect(25, 25, 50, 50);
+
+        /*
+          Canvas状态存储在图形上下文context中
+          - 上下文属性（描边样式、填充样式、全局透明度、线宽、线连接方式等）
+          - 变换矩阵信息（平移、旋转、缩放）
+          - 剪贴区域：通过clip( )方法创建的
+          
+          context原型链及继承关系
+          - context的构造器（constructor）为CanvasRenderingContext2D
+          - context对象的原型为CanvasRenderingContext2D.prototype
+
+          context 保存与恢复绘图上下文状态 （Save、Restore）
+          - 保存上下文状态到栈中，save之后，可调用平移、放缩、旋转、裁剪等操作
+          - 恢复上下文之前保存的状态，防止save后对Canvas执行的操作对后续的绘制有影响
+          
+          context 状态保存及恢复案例，理解状态堆栈  
+            context.fillStyle = "red";    
+            context.save( );  // 存到栈中
+            context.fillStyle = "blue"; 
+            context.fillRect(0,0,100,100);      // 蓝
+            context.restore( );   // 出栈
+            context.fillRect(100,100,100,100);  // 红
+        */
+
+        /*
+          直线相关绘制
+          context.moveTo(100,100);
+          context.lineTo(200,200);
+          context.lineWidth = 10;  // 设置直线宽度
+          context.strokeStyle = '#058';  // 设置绘制颜色(状态)
+          context.stroke();  // 进行绘制
+        */
+
+        /*
+          理解beginPath和closePath
+          beginPath：一段新路径的开始,开始一段新路径时在前面加上 context.beginPath()
+          closePath：仅仅用来闭合路径，并不意味着一段路径的结束
+        */
+
+        /*
+          context常用属性和方法
+          lineWidth
+          strokeStyle
+          fillStyle
+          lineCap:butt(默认)|round|square   线端点样式
+          lineJoin:miter(默认)|bevel|round  连接点样式
+
+          stroke()  绘制
+          fill()    填充
+        */
+
+        /*
+          绘制圆弧
+          context.strokeStyle="black"
+          context.lineWidth=5
+          context.arc(250,250,50,0.5*Math.PI,1.5*Math.PI,true) // context.arc(圆心x,圆心y,半径,开始角度,终止角度,true:逆时针|false(默认):顺时针)
+          context.stroke()
+        */
+
+        /*
+          绘制矩形
+          context.strokeStyle="red"; 
+          context.rect(50,50,100,100)  // 这个及arc仅仅是描绘了路径 等于moveTo lineTo lineTo...
+          context.stroke()  // 所以stroke不能忘  如果将此行换为 context.fill() 可直接填充出来
+
+          类似的 更偷懒的也可以使用 fillRect()、strokeRect()、clearRect()
+        */
+
+        /*
+          Canvas图案描边及填充
+          图案描边及填充
+          - var pattern = context.createPattern( image | video    , repeat-style )
+          - var pattern  = context.createPattern( canvas, repeat-style )
+          
+          图案描边及填充重复样式（repeat-style）
+          - no-repeat(不重复)  repeat(重复)       repeat-x (x 轴重复)    repeat-y  (y 轴重复)
+          
+          设置填充样式（图案）
+          - context.fillStyle = pattern ;
+          - context.strokeStyle = pattern ;
+
+          例如
+          var img = new Image()   
+          img.src = './images/fill_20x20.gif'
+          img.onload = function() {
+            var pattern = context.createPattern(img, ‘repeat’)
+            context.fillStyle = pattern   
+            context.fillRect(0,0,400,400)
+          }
+        */
+
+        /*
+        Canvas阴影设置
+        - context.shadowColor
+        - context.shadowOffsetX
+        - context.shadowOffsetY 
+        - context.shadowBlur
+
+        例
+        context.shadowColor='gray'// 阴影颜色
+        context.shadowOffsetX=10  // 阴影向右平移10  阴影大小同绘制图形大小
+        context.shadowOffsetY=10  // 阴影向下平移10
+        context.shadowBlur=10     // 引用模糊距离
+        context.fillStyle='red'
+        context.fillRect(100,100,200,100)
+        */
+
+        /*
+        Canvas图像合成
+        设置透明度
+        context.globalAlpha = 1(默认)
+
+        全局图像混合设置
+        context.globleCompositeOperation ="source-over"(默认) 值为图像混合类型
+        
+        图像混合类型
+        - source-over、source-atop、source-in、source-out、destination-over、destination-atop、destination-in、destination-out、lighter、copy、xor
+        */
+
+        /*
+        Canvas坐标系变换
+        平移：context.translate(x,y)
+        旋转：context.rotate(deg)
+        缩放：context.scale(sx,sy)
+
+        例
+        context.scale(2,1)
+        context.fillRect(100,100,100,100) // 对坐标系的x轴进行拉伸
+
+        context.rotate(45*Math.PI/180)   // 旋转整个坐标系
+        context.translate(100,100)       // 将整个坐标系分别向右向下移动100
+        */
+
+        /*
+        Canvas文本
+        context.font="italic bold 40px Arial"  // 对字体进行设置
+        context.fillText('hello',100,100)      // 填充文本     context.fillText('字体内容',填充位置x,填充位置y)
+        context.strokeText('world',300,100)    // 绘制文本
+
+        context.textAlign＝left ｜center｜right  // 文本的水平对齐
+        context.textBaseline＝ top｜middle｜bottom  // 文本的垂直对齐
+        console.log(context.measureText('文本内容').width)   // 测量文本内容的宽度
+        */
+        
+        /*
+        裁切
+        context.clip()  裁切后的操作基于裁切区域
+
+        例
+        context.rect(50,20,200,120)
+        context.stroke()
+        context.clip()   // 裁切出这个上述矩形区域
+        // 在 clip() 之后绘制绿色矩形
+        context.fillStyle="green"
+        context.fillRect(0,0,150,100) // 起始点为裁切区域的起始点 即以裁切区域为基准进行操作 
+        */
+      </script>
+  </body>
+</html>

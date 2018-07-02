@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>c3</title>
+</head>
+<body>
+  <canvas id="mycanvas"></canvas>
+  <script>
+    var mycanvas = document.getElementById("mycanvas");
+    mycanvas.width=500;
+    mycanvas.height=500;
+    var context = mycanvas.getContext("2d");
+    /*
+    Canvas动画
+     循环动画
+     window.requestAnimationFrame() 每秒60帧 参数为一个函数
+
+		var animationHandle = requestAnimationFrame(drawScreen);
+		document.onclick = function(){
+			if(animationHandle){
+				cancelAnimationFrame(animationHandle);
+			}
+		}
+    */ 
+
+    /*
+    例如：小方块动画
+    var sx=0, sy=0;
+    context.fillStyle="red";
+    function animations(){
+      sx++;
+      sy++;
+      context.clearRect(0,0,500,500)
+      context.fillRect(sx,sy,100,100)
+      console.log(sx,sy)
+      animationHandle = window.requestAnimationFrame(animations)
+    }
+    var animationHandle = window.requestAnimationFrame(animations)
+    document.onclick = function(){
+			if(animationHandle){
+				cancelAnimationFrame(animationHandle);
+			}
+		}
+    */
+  </script>
+</body>
+</html>
